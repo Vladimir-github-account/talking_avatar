@@ -3,3 +3,12 @@
     padding: 0;
     margin: 0;
 }
+
+.App {
+    min-height: 100vh;
+}
+
+.myCanvas {
+    margin-left: 100px;
+    border: 1px solid black;
+}
