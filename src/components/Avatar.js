@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import CanvasController    from './CanvasController';
 
 const Avatar = () => {
-	const [inputValue, setInputValue] = useState(146);
+	const [ax, setAx] = useState(146);
+	const [ay, setAy] = useState(132);
+	// const [bx, setBx] = useState(145);
+	// const [by, setBy] = useState(33);
 
-	const inputChangeHandler = (e) => {
-		setInputValue(e.target.value);
-		// console.log(lerp(e.target.value, 130, e.target.value));
+	const xInputChangeHandler = (e) => {
+		setAx(e.target.value);
+	};
+
+	const yInputChangeHandler = (e) => {
+		setAy(e.target.value);
 	};
 
 	function lerp(s, e, t) {
@@ -15,16 +21,41 @@ const Avatar = () => {
 
 	return (
 		<>
-			<CanvasController inputValue={inputValue}/>
+			<CanvasController ax={ax}
+			                  ay={ay}/>
 			<div className="sliderList">
 				<input type="range"
 				       id="Ax"
-				       value={inputValue}
+				       value={ax}
 				       className="Ax"
-				       min="0"
-				       max="300"
-				       onChange={inputChangeHandler}
+				       min="130"
+				       max="160"
+				       onChange={xInputChangeHandler}
 				/>
+				<input type="range"
+				       id="Ay"
+				       value={ay}
+				       className="Ay"
+				       min="120"
+				       max="140"
+				       onChange={yInputChangeHandler}
+				/>
+				{/*<input type="range"*/}
+				{/*       id="Bx"*/}
+				{/*       value={bx}*/}
+				{/*       className="Bx"*/}
+				{/*       min="100"*/}
+				{/*       max="200"*/}
+				{/*       onChange={x2InputChangeHandler}*/}
+				{/*/>*/}
+				{/*<input type="range"*/}
+				{/*       id="By"*/}
+				{/*       value={by}*/}
+				{/*       className="By"*/}
+				{/*       min="15"*/}
+				{/*       max="50"*/}
+				{/*       onChange={y2InputChangeHandler}*/}
+				{/*/>*/}
 			</div>
 		</>
 	);
