@@ -7,10 +7,10 @@ const CanvasController = ({ ax, ay, ...props }) => {
 	img.src = image;
 
 	const points = {
-		bx: Number(ax) + Number((145 - ax) * 0.8),
-		by: Number(ay) + Number((145 - ay) * 0.7) - 100,
-		cx: Number(ax) + Number((145 - ax) * 0.8),
-		cy: Number(ay) + Number((145 - ay) * 0.5) + 85
+		bx: ax + (145 - ax) * 0.8,
+		by: ay + (145 - ay) * 0.7 - 100,
+		cx: ax + (145 - ax) * 0.8,
+		cy: ay + (145 - ay) * 0.5 + 85
 	};
 
 	function drawAvatar(ctx) {
@@ -28,21 +28,7 @@ const CanvasController = ({ ax, ay, ...props }) => {
 	}
 
 	function drawHead(ctx, bx, by, cx, cy) {
-		ctx.beginPath();
-		ctx.moveTo(bx, by);
-		ctx.quadraticCurveTo(ax, ay, cx, cy);
-		ctx.moveTo(72, 130);
-		ctx.quadraticCurveTo(ax, ay, 215, 130);
-		ctx.stroke();
-
-		ctx.beginPath();
-		ctx.moveTo(bx, by);
-		ctx.quadraticCurveTo(80, 46, 72, 130);
-		ctx.quadraticCurveTo(87, 189, cx, cy);
-		ctx.quadraticCurveTo(196, 188, 215, 130);
-		ctx.quadraticCurveTo(210, 40, bx, by);
-		ctx.stroke();
-
+		drawHeadSkeleton(ctx, bx, by, cx, cy);
 		drawEyes(ctx);
 		drawNoise(ctx);
 	}
@@ -78,81 +64,105 @@ const CanvasController = ({ ax, ay, ...props }) => {
 
 	function drawEyes(ctx) {
 		ctx.beginPath();
-		drawLeftEye(ctx);
-		drawRightEye(ctx);
+		const yDistanceFromCenter = Math.abs((ay - 132) / 100) * 1.2;
+		let eyeAy = ay;
+		ctx.save();
+		if (Math.abs(ay - 132) > 4) {
+			ctx.scale(1, 1 - yDistanceFromCenter);
+			eyeAy = ay * (1 + yDistanceFromCenter);
+		}
+		drawLeftEye(ctx, eyeAy);
+		drawRightEye(ctx, eyeAy);
+		ctx.restore();
 	}
 
-	function drawRightEye(ctx) {
+	function drawRightEye(ctx, eyeAy) {
 		const xDistanceFromCenter = Math.abs((ax - 145) / 100) * 1.5;
-		const yDistanceFromCenter = Math.abs((ay - 132) / 100) * 1.2;
 		let rightAx = ax;
-		let rightAy = ay;
-		ctx.save();
 		if (ax > 145) {
 			ctx.scale(1 - xDistanceFromCenter, 1);
 			rightAx = ax * (1 + xDistanceFromCenter);
 		}
-		if (Math.abs(ay - 132) > 4) {
-			ctx.scale(1, 1 - yDistanceFromCenter);
-			rightAy = ay * (1 + yDistanceFromCenter);
-		}
 		ctx.fillStyle = 'black';
 		ctx.beginPath();
-		ctx.arc(rightAx + 25, rightAy + 7, 7, 0, Math.PI * 2);
+		ctx.arc(rightAx + 25, eyeAy + 7, 7, 0, Math.PI * 2);
 		ctx.fill();
-
-		//eyebrow
-		ctx.moveTo(rightAx + 48, rightAy - 5);
-		ctx.quadraticCurveTo(rightAx + 40, rightAy - 10, rightAx + 27, rightAy - 9);
-		ctx.quadraticCurveTo(rightAx + 23, rightAy - 10, rightAx + 15, rightAy - 3);
-		ctx.quadraticCurveTo(rightAx + 24, rightAy - 7, rightAx + 27, rightAy - 7);
-		ctx.quadraticCurveTo(rightAx + 28, rightAy - 8, rightAx + 48, rightAy - 5);
-		ctx.fill();
-
-		ctx.moveTo(rightAx - -12, rightAy + 10);
-		ctx.quadraticCurveTo(rightAx + 19, rightAy + 20, rightAx + 34, rightAy + 20);
-		ctx.quadraticCurveTo(rightAx + 48, rightAy + 17, rightAx + 50, rightAy + 3);
-		ctx.quadraticCurveTo(rightAx + 49, rightAy - 2, rightAx + 32, rightAy - 4);
-		ctx.quadraticCurveTo(rightAx + 15, rightAy - 4, rightAx + 13, rightAy + 11);
-		ctx.stroke();
-		ctx.restore();
+		drawRightEyebrow(ctx, rightAx, eyeAy);
+		drawRightEyeSkeleton(ctx, rightAx, eyeAy);
 	}
 
-	function drawLeftEye(ctx) {
+	function drawRightEyebrow(ctx, x, y) {
+		ctx.moveTo(x + 48, y - 5);
+		ctx.quadraticCurveTo(x + 40, y - 10, x + 27, y - 9);
+		ctx.quadraticCurveTo(x + 23, y - 10, x + 15, y - 3);
+		ctx.quadraticCurveTo(x + 24, y - 7, x + 27, y - 7);
+		ctx.quadraticCurveTo(x + 28, y - 8, x + 48, y - 5);
+		ctx.fill();
+	}
+
+	function drawRightEyeSkeleton(ctx, x, y) {
+		ctx.moveTo(x + 12, y + 10);
+		ctx.quadraticCurveTo(x + 19, y + 20, x + 34, y + 20);
+		ctx.quadraticCurveTo(x + 48, y + 17, x + 50, y + 3);
+		ctx.quadraticCurveTo(x + 49, y - 2, x + 32, y - 4);
+		ctx.quadraticCurveTo(x + 15, y - 4, x + 13, y + 11);
+		ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+		ctx.fill();
+		ctx.stroke();
+	}
+
+	function drawLeftEye(ctx, eyeAy) {
 		const xDistanceFromCenter = Math.abs((ax - 145) / 100) * 1.5;
-		const yDistanceFromCenter = Math.abs((ay - 132) / 100) * 1.2;
 		let leftAx = ax;
-		let leftAy = ay;
 		ctx.save();
 		if (ax < 145) {
 			ctx.scale(1 - xDistanceFromCenter, 1);
 			leftAx = ax * (1 + xDistanceFromCenter * 1.5);
 		}
-		if (Math.abs(ay - 132) > 4) {
-			ctx.scale(1, 1 - yDistanceFromCenter);
-			leftAy = ay * (1 + yDistanceFromCenter);
-		}
 		ctx.fillStyle = 'black';
 		ctx.beginPath();
-		ctx.arc(leftAx - 25, leftAy + 7, 7, 0, Math.PI * 2);
+		ctx.arc(leftAx - 25, eyeAy + 7, 7, 0, Math.PI * 2);
 		ctx.fill();
+		drawLeftEyebrow(ctx, leftAx, eyeAy);
+		drawLeftEyeSkeleton(ctx, leftAx, eyeAy);
+		ctx.restore();
+	}
 
-		ctx.moveTo(leftAx - 48, leftAy - 5);
-		ctx.quadraticCurveTo(leftAx - 40, leftAy - 10, leftAx - 27, leftAy - 9);
-		ctx.quadraticCurveTo(leftAx - 23, leftAy - 10, leftAx - 15, leftAy - 3);
-		ctx.quadraticCurveTo(leftAx - 24, leftAy - 7, leftAx - 27, leftAy - 7);
-		ctx.quadraticCurveTo(leftAx - 28, leftAy - 8, leftAx - 48, leftAy - 5);
+	function drawLeftEyebrow(ctx, x, y) {
+		ctx.moveTo(x - 48, y - 5);
+		ctx.quadraticCurveTo(x - 40, y - 10, x - 27, y - 9);
+		ctx.quadraticCurveTo(x - 23, y - 10, x - 15, y - 3);
+		ctx.quadraticCurveTo(x - 24, y - 7, x - 27, y - 7);
+		ctx.quadraticCurveTo(x - 28, y - 8, x - 48, y - 5);
 		ctx.fill();
+	}
 
-		ctx.moveTo(leftAx - 12, leftAy + 10);
-		ctx.quadraticCurveTo(leftAx - 19, leftAy + 20, leftAx - 34, leftAy + 20);
-		ctx.quadraticCurveTo(leftAx - 48, leftAy + 17, leftAx - 50, leftAy + 3);
-		ctx.quadraticCurveTo(leftAx - 48, leftAy - 2, leftAx - 32, leftAy - 4);
-		ctx.quadraticCurveTo(leftAx - 15, leftAy - 4, leftAx - 13, leftAy + 11);
+	function drawLeftEyeSkeleton(ctx, x, y) {
+		ctx.moveTo(x - 12, y + 10);
+		ctx.quadraticCurveTo(x - 19, y + 20, x - 34, y + 20);
+		ctx.quadraticCurveTo(x - 48, y + 17, x - 50, y + 3);
+		ctx.quadraticCurveTo(x - 48, y - 2, x - 32, y - 4);
+		ctx.quadraticCurveTo(x - 15, y - 4, x - 13, y + 11);
 		ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
 		ctx.fill();
 		ctx.stroke();
-		ctx.restore();
+	}
+
+	function drawHeadSkeleton(ctx, bx, by, cx, cy) {
+		ctx.beginPath();
+		ctx.moveTo(bx, by);
+		ctx.quadraticCurveTo(ax, ay, cx, cy);
+		ctx.moveTo(72, 130);
+		ctx.quadraticCurveTo(ax, ay, 215, 130);
+		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.moveTo(bx, by);
+		ctx.quadraticCurveTo(80, 46, 72, 130);
+		ctx.quadraticCurveTo(87, 189, cx, cy);
+		ctx.quadraticCurveTo(196, 188, 215, 130);
+		ctx.quadraticCurveTo(210, 40, bx, by);
+		ctx.stroke();
 	}
 
 	function drawBody(ctx) {
