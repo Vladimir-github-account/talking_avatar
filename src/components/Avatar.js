@@ -8,11 +8,11 @@ const Avatar = () => {
 	// const [by, setBy] = useState(33);
 
 	const xInputChangeHandler = (e) => {
-		setAx(e.target.value);
+		setAx(Number(e.target.value));
 	};
 
 	const yInputChangeHandler = (e) => {
-		setAy(e.target.value);
+		setAy(Number(e.target.value));
 	};
 
 	function lerp(s, e, t) {

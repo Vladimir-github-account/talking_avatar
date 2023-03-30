@@ -25,6 +25,5 @@ const Canvas = ({ draw, height, width, props }) => {
 		        {...props}/>
 	</>;
 };
-// // ctx.fillStyle = 'yellow';
 // // ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 export default Canvas;
