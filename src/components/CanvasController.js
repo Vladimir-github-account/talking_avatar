@@ -1,6 +1,7 @@
-import React  from 'react';
-import Canvas from './Canvas';
-import image  from './avatar.png';
+import React         from 'react';
+import Canvas        from './Canvas';
+import image         from './avatar.png';
+import { skinColor } from '../constants';
 
 const CanvasController = ({ ax, ay, ...props }) => {
 	const img = new Image();
@@ -19,7 +20,7 @@ const CanvasController = ({ ax, ay, ...props }) => {
 		ctx.globalAlpha = 0.3;
 		ctx.drawImage(img, 0, 0, 300, 300);
 		ctx.globalAlpha = 1;
-		drawBody(ctx);
+		drawBody(ctx, cx, cy);
 		drawHead(ctx, bx, by, cx, cy);
 
 		drawPoint(ctx, ax, ay, 'A');
@@ -77,17 +78,18 @@ const CanvasController = ({ ax, ay, ...props }) => {
 	}
 
 	function drawRightEye(ctx, eyeAy) {
+		ctx.beginPath();
 		const xDistanceFromCenter = Math.abs((ax - 145) / 100) * 1.5;
 		let rightAx = ax;
 		if (ax > 145) {
 			ctx.scale(1 - xDistanceFromCenter, 1);
 			rightAx = ax * (1 + xDistanceFromCenter);
 		}
+		drawRightEyebrow(ctx, rightAx, eyeAy);
 		ctx.fillStyle = 'black';
 		ctx.beginPath();
 		ctx.arc(rightAx + 25, eyeAy + 7, 7, 0, Math.PI * 2);
 		ctx.fill();
-		drawRightEyebrow(ctx, rightAx, eyeAy);
 		drawRightEyeSkeleton(ctx, rightAx, eyeAy);
 	}
 
@@ -97,6 +99,7 @@ const CanvasController = ({ ax, ay, ...props }) => {
 		ctx.quadraticCurveTo(x + 23, y - 10, x + 15, y - 3);
 		ctx.quadraticCurveTo(x + 24, y - 7, x + 27, y - 7);
 		ctx.quadraticCurveTo(x + 28, y - 8, x + 48, y - 5);
+		ctx.fillStyle = 'rgba(0, 0, 0, 1)';
 		ctx.fill();
 	}
 
@@ -106,7 +109,7 @@ const CanvasController = ({ ax, ay, ...props }) => {
 		ctx.quadraticCurveTo(x + 48, y + 17, x + 50, y + 3);
 		ctx.quadraticCurveTo(x + 49, y - 2, x + 32, y - 4);
 		ctx.quadraticCurveTo(x + 15, y - 4, x + 13, y + 11);
-		ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+		ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 		ctx.fill();
 		ctx.stroke();
 	}
@@ -119,12 +122,13 @@ const CanvasController = ({ ax, ay, ...props }) => {
 			ctx.scale(1 - xDistanceFromCenter, 1);
 			leftAx = ax * (1 + xDistanceFromCenter * 1.5);
 		}
-		ctx.fillStyle = 'black';
+		drawLeftEyebrow(ctx, leftAx, eyeAy);
 		ctx.beginPath();
+		drawLeftEyeSkeleton(ctx, leftAx, eyeAy);
+		ctx.beginPath();
+		ctx.fillStyle = 'black';
 		ctx.arc(leftAx - 25, eyeAy + 7, 7, 0, Math.PI * 2);
 		ctx.fill();
-		drawLeftEyebrow(ctx, leftAx, eyeAy);
-		drawLeftEyeSkeleton(ctx, leftAx, eyeAy);
 		ctx.restore();
 	}
 
@@ -134,6 +138,7 @@ const CanvasController = ({ ax, ay, ...props }) => {
 		ctx.quadraticCurveTo(x - 23, y - 10, x - 15, y - 3);
 		ctx.quadraticCurveTo(x - 24, y - 7, x - 27, y - 7);
 		ctx.quadraticCurveTo(x - 28, y - 8, x - 48, y - 5);
+		ctx.fillStyle = 'rgba(0, 0, 0, 1)';
 		ctx.fill();
 	}
 
@@ -143,7 +148,7 @@ const CanvasController = ({ ax, ay, ...props }) => {
 		ctx.quadraticCurveTo(x - 48, y + 17, x - 50, y + 3);
 		ctx.quadraticCurveTo(x - 48, y - 2, x - 32, y - 4);
 		ctx.quadraticCurveTo(x - 15, y - 4, x - 13, y + 11);
-		ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+		ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 		ctx.fill();
 		ctx.stroke();
 	}
@@ -158,24 +163,28 @@ const CanvasController = ({ ax, ay, ...props }) => {
 
 		ctx.beginPath();
 		ctx.moveTo(bx, by);
-		ctx.quadraticCurveTo(80, 46, 72, 130);
-		ctx.quadraticCurveTo(87, 189, cx, cy);
-		ctx.quadraticCurveTo(196, 188, 215, 130);
+		ctx.quadraticCurveTo(78, 46, 72, 130);
+		ctx.quadraticCurveTo(87, 194, cx, cy);
+		ctx.quadraticCurveTo(203, 194, 218, 130);
 		ctx.quadraticCurveTo(210, 40, bx, by);
 		ctx.stroke();
+		ctx.fillStyle=skinColor;
+		ctx.fill();
 	}
 
-	function drawBody(ctx) {
+	function drawBody(ctx, cx, cy) {
 		ctx.beginPath();
-		ctx.moveTo(116, 205);
+		ctx.moveTo(cx - 29, cy - 23);
 		ctx.quadraticCurveTo(118, 217, 114, 242);
 		ctx.lineTo(19, 265);
 		ctx.lineTo(19, 310);
 		ctx.lineTo(277, 310);
 		ctx.lineTo(277, 265);
-		ctx.lineTo(182, 237);
-		ctx.quadraticCurveTo(177, 217, 179, 198);
+		ctx.lineTo(176, 242);
+		ctx.quadraticCurveTo(171, 217, cx + 29, cy - 23);
 		ctx.stroke();
+		ctx.fillStyle='rgba(0, 255, 0, 0.1)';
+		ctx.fill();
 	}
 
 	function drawPoint(ctx, x, y, label, rad = 7) {

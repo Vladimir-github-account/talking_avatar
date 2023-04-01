@@ -1,0 +1,1 @@
+export const skinColor = 'rgb(248,196,173)'
