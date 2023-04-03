@@ -1,7 +1,7 @@
-import React         from 'react';
-import Canvas        from './Canvas';
-import image         from './avatar.png';
-import { skinColor } from '../constants';
+import React                       from 'react';
+import Canvas                      from './Canvas';
+import image                       from './avatar.png';
+import { clothesColor, skinColor } from '../constants';
 
 const CanvasController = ({ ax, ay, ...props }) => {
 	const img = new Image();
@@ -16,16 +16,21 @@ const CanvasController = ({ ax, ay, ...props }) => {
 
 	function drawAvatar(ctx) {
 		const { bx, by, cx, cy } = points;
+		const xDistanceFromCenter = (ax - 145) / 100;
 		ctx.clearRect(0, 0, 300, 300);
 		ctx.globalAlpha = 0.3;
 		ctx.drawImage(img, 0, 0, 300, 300);
 		ctx.globalAlpha = 1;
+		ctx.save();
+		ctx.translate(xDistanceFromCenter * 3, 0);
+
 		drawBody(ctx, cx, cy);
+		ctx.restore();
 		drawHead(ctx, bx, by, cx, cy);
 
-		drawPoint(ctx, ax, ay, 'A');
-		drawPoint(ctx, bx, by, 'B');
-		drawPoint(ctx, cx, cy, 'C');
+		// drawPoint(ctx, ax, ay, 'A');
+		// drawPoint(ctx, bx, by, 'B');
+		// drawPoint(ctx, cx, cy, 'C');
 	}
 
 	function drawHead(ctx, bx, by, cx, cy) {
@@ -168,23 +173,47 @@ const CanvasController = ({ ax, ay, ...props }) => {
 		ctx.quadraticCurveTo(203, 194, 218, 130);
 		ctx.quadraticCurveTo(210, 40, bx, by);
 		ctx.stroke();
-		ctx.fillStyle=skinColor;
+		ctx.fillStyle = skinColor;
 		ctx.fill();
 	}
 
 	function drawBody(ctx, cx, cy) {
 		ctx.beginPath();
 		ctx.moveTo(cx - 29, cy - 23);
-		ctx.quadraticCurveTo(118, 217, 114, 242);
+		ctx.quadraticCurveTo(118, 217, 114, 240);
 		ctx.lineTo(19, 265);
 		ctx.lineTo(19, 310);
 		ctx.lineTo(277, 310);
 		ctx.lineTo(277, 265);
-		ctx.lineTo(176, 242);
+		ctx.lineTo(176, 240);
 		ctx.quadraticCurveTo(171, 217, cx + 29, cy - 23);
 		ctx.stroke();
-		ctx.fillStyle='rgba(0, 255, 0, 0.1)';
+		ctx.fillStyle = skinColor;
 		ctx.fill();
+
+		drawClothes(ctx);
+	}
+
+	function drawClothes(ctx) {
+		ctx.beginPath();
+		ctx.moveTo(113, 266);
+		ctx.lineTo(125, 269);
+		ctx.quadraticCurveTo(153, 255, 158, 256);
+		ctx.quadraticCurveTo(195, 251, 200, 239);
+		ctx.quadraticCurveTo(219, 229, 220, 244);
+		ctx.quadraticCurveTo(221, 263, 161, 275);
+		ctx.moveTo(220, 249);
+		ctx.quadraticCurveTo(277, 263, 278, 264);
+		ctx.quadraticCurveTo(286, 274, 288, 300);
+		ctx.lineTo(6, 300);
+		ctx.quadraticCurveTo(14, 268, 18, 264);
+		ctx.quadraticCurveTo(78, 244, 80, 245);
+		ctx.quadraticCurveTo(82, 215, 106, 239);
+		ctx.quadraticCurveTo(116, 247, 119, 249);
+		ctx.quadraticCurveTo(152, 254, 150, 259);
+		ctx.fillStyle = clothesColor;
+		ctx.fill();
+		ctx.stroke();
 	}
 
 	function drawPoint(ctx, x, y, label, rad = 7) {
