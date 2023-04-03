@@ -37,6 +37,78 @@ const CanvasController = ({ ax, ay, ...props }) => {
 		drawHeadSkeleton(ctx, bx, by, cx, cy);
 		drawEyes(ctx);
 		drawNoise(ctx);
+		ctx.save();
+		const xDistanceFromCenter = (ax - 145) / 100;
+		ctx.translate(xDistanceFromCenter * 8, 0);
+		drawEars(ctx, by + 100);
+		ctx.restore();
+
+	}
+
+	function drawEars(ctx, by) {
+		const xDistanceFromCenter = Math.abs((ax - 145) / 100) * 1.4;
+		const yDistanceFromCenter = Math.abs((ay - 132) / 100) * 0.5;
+		let eyeAy = by;
+		ctx.save();
+		if (Math.abs(ay - 132) > 4) {
+			ctx.scale(1, 1 - yDistanceFromCenter);
+			eyeAy = by * (1 + yDistanceFromCenter);
+		}
+		const leftEarModifier = ax > 145
+		                 ? (1 + xDistanceFromCenter * 0.2)
+		                 : (1 + xDistanceFromCenter * 1.5);
+		const rightEarModifier = ax < 145
+		                 ? (1 - xDistanceFromCenter * 0.1)
+		                 : (1 + xDistanceFromCenter * 0.70);
+		drawLeftEar(ctx, leftEarModifier, eyeAy);
+		drawRightEar(ctx, rightEarModifier, eyeAy);
+		ctx.restore();
+	}
+
+	function drawLeftEar(ctx, xMod, y) {
+		const xDistanceFromCenter = Math.abs((ax - 145) / 100) * 1.4;
+		ctx.save();
+		if (ax < 145) {
+			ctx.scale(1 - xDistanceFromCenter, 1);
+		}
+		ctx.beginPath();
+		ctx.moveTo((145 - 68) * xMod, y - 12);
+		ctx.quadraticCurveTo((145 - 72) * xMod, y - 18, (145 - 75) * xMod, y - 13);
+		ctx.quadraticCurveTo((145 - 80) * xMod, y + 7, (145 - 68) * xMod, y + 15);
+		ctx.quadraticCurveTo((145 - 65) * xMod, y + 15, (145 - 64) * xMod, y + 10);
+		ctx.moveTo((145 - 66) * xMod, y + 8);
+		ctx.quadraticCurveTo((145 - 70) * xMod, y + 7.5, (145 - 69) * xMod, y + 9.5);
+		ctx.moveTo((145 - 70) * xMod, y + 8);
+		ctx.quadraticCurveTo((145 - 72.5) * xMod, y + 1, (145 - 71.5) * xMod, y);
+		ctx.moveTo((145 - 70.5) * xMod, y - 8);
+		ctx.quadraticCurveTo((145 - 72) * xMod, y - 2, (145 - 72) * xMod, y - 0.5);
+		ctx.fillStyle = skinColor;
+		ctx.fill();
+		ctx.stroke();
+		ctx.restore();
+	}
+
+	function drawRightEar(ctx, xMod, y) {
+		const xDistanceFromCenter = Math.abs((ax - 145) / 100) * 0.9;
+		ctx.save();
+		if (ax > 145) {
+			ctx.scale(1 - xDistanceFromCenter, 1);
+		}
+		ctx.beginPath();
+		ctx.moveTo((145 + 68) * xMod, y - 12);
+		ctx.quadraticCurveTo((145 + 72) * xMod, y - 18, (145 + 75) * xMod, y - 13);
+		ctx.quadraticCurveTo((145 + 80) * xMod, y + 7, (145 + 68) * xMod, y + 15);
+		ctx.quadraticCurveTo((145 + 65) * xMod, y + 15, (145 + 64) * xMod, y + 10);
+		ctx.moveTo((145 + 66) * xMod, y + 8);
+		ctx.quadraticCurveTo((145 + 70) * xMod, y + 7.5, (145 + 69) * xMod, y + 9.5);
+		ctx.moveTo((145 + 70) * xMod, y + 8);
+		ctx.quadraticCurveTo((145 + 72.5) * xMod, y + 1, (145 + 71.5) * xMod, y);
+		ctx.moveTo((145 + 70.5) * xMod, y - 8);
+		ctx.quadraticCurveTo((145 + 72) * xMod, y - 2, (145 + 72) * xMod, y - 0.5);
+		ctx.fillStyle = skinColor;
+		ctx.fill();
+		ctx.stroke();
+		ctx.restore();
 	}
 
 	function drawNoise(ctx) {
