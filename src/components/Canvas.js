@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const Canvas = ({ draw, height, width, props }) => {
+const Canvas = ({ draw, width, height, props }) => {
 	const canvasRef = useRef();
 
 	useEffect(() => {

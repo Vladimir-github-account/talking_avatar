@@ -4,8 +4,6 @@ import CanvasController    from './CanvasController';
 const Avatar = () => {
 	const [ax, setAx] = useState(146);
 	const [ay, setAy] = useState(132);
-	// const [bx, setBx] = useState(145);
-	// const [by, setBy] = useState(33);
 
 	const xInputChangeHandler = (e) => {
 		setAx(Number(e.target.value));
@@ -14,10 +12,6 @@ const Avatar = () => {
 	const yInputChangeHandler = (e) => {
 		setAy(Number(e.target.value));
 	};
-
-	function lerp(s, e, t) {
-		return s + (e - s) * t;
-	}
 
 	return (
 		<>
